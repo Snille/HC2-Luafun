@@ -6,8 +6,8 @@
  
 --------- Your Device ID's Here ---------
  
-local virtualDevID = 69  -- Minimote 01 Funktion
-local minimoteID = 162   -- Minimote 01 Fysisk
+local virtualDevID = 69  -- Minimote 01 Function
+local minimoteID = 162   -- Minimote 01 Physical
  
 ------ Do not edit below this line ------
 
