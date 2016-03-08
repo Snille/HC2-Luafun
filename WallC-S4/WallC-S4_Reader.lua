@@ -6,8 +6,8 @@
  
 --------- Your Device ID's Here ---------
 
-local virtualDevID = 152  -- WallC-S4 01 Funktion
-local wallcsID = 140    -- WallC-S4 01 Fysisk
+local virtualDevID = 152  -- WallC-S4 01 Function
+local wallcsID = 140    -- WallC-S4 01 Physical
  
 ------ Do not edit below this line ------
 
