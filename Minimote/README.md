@@ -1,3 +1,3 @@
 # Minimote
 
-Almoste the same as the WallC-S device. :)
+Almost the same as the WallC-S device. :)
