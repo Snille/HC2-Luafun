@@ -1,18 +1,18 @@
 --[[
 %% autostart
 %% properties 
-156 valueSensor --(Thing Wallplugg ID)
+156 valueSensor
 %% globals 
 --]] 
 
-local id = 156 -- Thing Wallplugg ID.
-local donevalue = 1 -- When dishwasher uses less watt then this then it's done.
+-- Dont forget to change the number before "valueSensor" above to the same number as ID below!!
+local id = 156 -- Thing Wallplugg ID we are monitoring.
+local donevalue = 5 -- When the appliance uses less watt then this then it's done.
 local timer = 300 -- How often to check watt usage in seconds (300 = 5 minutes).
 local counter = 4 -- Counter used for counting wait timer loops before sending done message, to make sure the dishwasher is really done (timer * counter = time to wait).
-local touser = 167 -- The user to receive the done-message (166 = NMA-User, 167 = Snilles Z2).
+local touser = fibaro:getGlobalValue("msguser01"); -- The user to receive the done-message (You must create the global variable for the user who should receive the message in the “Variables Panel”).
 local thing = "Dishwasher" -- The thing we are monitoring (for the debugging text output).
-local subject = "Diskmaskin klar." -- Email message header.
-local message = "Dags att gå och plocka ur den!" -- Email and Push message body.
+local messagenr = "122" -- Message number from notification list (you must create the message in the “Notifications Panel”, you can see the message number in the URL).
 local notifytype = "push" -- Can be set to either "email" or "push".
 
 -- Don't change below!!
@@ -49,9 +49,9 @@ function mainloop()
       count = count+1
       if (count > counter) then
 		if (notifytype == "email") then
-          fibaro:call(touser, "sendEmail", subject, message)
+          fibaro:call(touser, "sendEmail", messagenr);
         elseif (notifytype == "push") then
-          fibaro:call(touser, "sendPush", subject.." "..message);
+          fibaro:call(touser, "sendDefinedPushNotification", messagenr);
         else
           fibaro:debug (thing.. " is done! This debug message sent (nor email or push was selected).\nState is: " ..status.. " and watt is: " ..watts);
         end
