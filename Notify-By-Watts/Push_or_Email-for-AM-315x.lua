@@ -1,19 +1,20 @@
 --[[
 %% autostart
 %% properties 
-199 valueSensor --(AM Wallplugg ID)
+199 valueSensor
 %% globals 
 --]] 
 
+-- Dont forget to change the number before "valueSensor" above to the same number as ID below!!
 local id = 199 -- AM Wallplugg ID.
 local donevalue = 10 -- When device uses less watt then this then it's done.
 local timer1 = 300 -- How often to check watt usage in seconds (600 = 10 minutes) when in the "wait loop".
 local timer2 = 60 -- How often to check watt usage in seconds (60 = 1 minute) when in the "rechargeing loop".
 local counter = 5 -- Counter used for counting wait timer2 loops before sending done message, to make sure it's really done (timer2 * counter = time to wait).
-local touser = 230 -- The user to receive the messages (230 = Snilles OnePlus3).
+local touser = fibaro:getGlobalValue("msguser01"); -- The user to receive the messages (You must create the global variable for the user who should receive the message in the “Variables Panel”).
 local thing = "Rupert" -- The Automowers name we are monitoring (for the debugging text output).
-local messagenr1 = "259" -- Message number from notification list when rechargeing is finnished.
-local messagenr2 = "261" -- Message number from notification list when rechargeing begins.
+local messagenr1 = "259" -- Message number from notification list when rechargeing is finnished (you must create the message in the “Notifications Panel”, you can see the message number in the URL).
+local messagenr2 = "261" -- Message number from notification list when rechargeing begins (you must create the message in the “Notifications Panel”, you can see the message number in the URL).
 local notifytype = "push" -- Can be set to either "email" or "push".
 
 -- Don't change below!!
