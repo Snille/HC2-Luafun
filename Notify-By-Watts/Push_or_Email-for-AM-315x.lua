@@ -11,11 +11,13 @@ local donevalue = 10 -- When device uses less watt then this then it's done.
 local timer1 = 300 -- How often to check watt usage in seconds (600 = 10 minutes) when in the "wait loop".
 local timer2 = 60 -- How often to check watt usage in seconds (60 = 1 minute) when in the "rechargeing loop".
 local counter = 5 -- Counter used for counting wait timer2 loops before sending done message, to make sure it's really done (timer2 * counter = time to wait).
-local touser = fibaro:getGlobalValue("msguser01"); -- The user to receive the messages (You must create the global variable for the user who should receive the message in the “Variables Panel”).
+local touser = fibaro:getGlobalValue("msguser01"); -- The user to receive the done-message (I make global variable for this).
 local thing = "Rupert" -- The Automowers name we are monitoring (for the debugging text output).
-local messagenr1 = "259" -- Message number from notification list when rechargeing is finnished (you must create the message in the “Notifications Panel”, you can see the message number in the URL).
-local messagenr2 = "261" -- Message number from notification list when rechargeing begins (you must create the message in the “Notifications Panel”, you can see the message number in the URL).
+local messagenr1 = "259" -- Message number from notification list when rechargeing is finnished.
+local messagenr2 = "261" -- Message number from notification list when rechargeing begins.
 local notifytype = "push" -- Can be set to either "email" or "push".
+local debug = tonumber(fibaro:getGlobalValue("globaldebug")); -- Set to one to activate debugging (show all messages).
+--local debug = 1 -- Set to one to activate debugging (show all messages).
 
 -- Don't change below!!
 
@@ -56,14 +58,14 @@ function mainloop()
         elseif (notifytype == "push") then
           fibaro:call(touser, "sendDefinedPushNotification", messagenr1);
         else
-          fibaro:debug (thing.. " is done rechargeing! This debug message sent (nor email or push was selected).\nState is: " ..status.. " and watt is: " ..watts);
+          if debug > 0 then fibaro:debug (thing.. " is done rechargeing! This debug message sent (nor email or push was selected).\nState is: " ..status.. " and watt is: " ..watts); end
         end
-        fibaro:debug (thing.. " is done rechargeing! Messages sent.\nState is: " ..status.. " and watt is: " ..watts);
+        if debug > 0 then fibaro:debug (thing.. " is done rechargeing! Messages sent.\nState is: " ..status.. " and watt is: " ..watts); end
         count = 0
         messsent = 1
         start = 0
       else 
-        fibaro:debug (thing.. " is probably done rechargeing. No messages sent yet, wait " ..count.. "/" ..counter.. " to be sure.\nState is: " ..status.. " and watt is: " ..watts);
+        if debug > 0 then fibaro:debug (thing.. " is probably done rechargeing. No messages sent yet, wait " ..count.. "/" ..counter.. " to be sure.\nState is: " ..status.. " and watt is: " ..watts); end
         fibaro:sleep(timer2*1000)
         mainloop();
       end
@@ -74,19 +76,19 @@ function mainloop()
         elseif (notifytype == "push") then
           fibaro:call(touser, "sendDefinedPushNotification", messagenr2);
         else
-          fibaro:debug (thing.. " at docking station and starts rechargeing! This debug message sent (nor email or push was selected).\nState is: " ..status.. " and watt is: " ..watts);
+          if debug > 0 then fibaro:debug (thing.. " at docking station and starts rechargeing! This debug message sent (nor email or push was selected).\nState is: " ..status.. " and watt is: " ..watts); end
         end
-        fibaro:debug (thing.. " at docking station and starts rechargeing! \nState is: " ..status.. " and watt is: " ..watts);
+        if debug > 0 then fibaro:debug (thing.. " at docking station and starts rechargeing! \nState is: " ..status.. " and watt is: " ..watts); end
         start = 1
       end
-      fibaro:debug (thing.. " is still rechargeing!\nState is: " ..status.. " and watt is: " ..watts);
+      if debug > 0 then fibaro:debug (thing.. " is still rechargeing!\nState is: " ..status.. " and watt is: " ..watts); end
       messsent = 0
       count = 0
       fibaro:sleep(timer2*1000)
       mainloop();
     end
   end
-  fibaro:debug ("Wating for " ..thing.. " to start rechargeing.\nState is: " ..status.. " and watt is: " ..watts);
+  if debug > 0 then fibaro:debug ("Wating for " ..thing.. " to start rechargeing.\nState is: " ..status.. " and watt is: " ..watts); end
   if (messsent == 1 and watts > donevalue) then
     messsent = 0
   end
@@ -96,10 +98,10 @@ end
 
 status = checkstatus();
 watts = checkwatts();
-fibaro:debug ("Start - " ..thing.. " plug is in state "..status.. " and consums " ..watts.. " watt.");
+if debug > 0 then fibaro:debug ("Start - " ..thing.. " plug is in state "..status.. " and consums " ..watts.. " watt."); end
 
 if (sourceTrigger["type"] == "autostart") then
   mainresult = mainloop();
 else
-  fibaro:debug ("No auto start...");
+  if debug > 0 then fibaro:debug ("No auto start..."); end
 end
