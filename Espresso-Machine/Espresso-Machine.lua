@@ -72,14 +72,15 @@ if (tonumber(fibaro:getValue(id, "value")) > 0) then
           if debug > 0 then fibaro:debug (thing.. " is done! This debug message sent (either email nor push was selected).\nState is: " ..status.. " and watt is: " ..watts); end
         end
         if (sonossay > 0) then
+          local currenthour = os.date("%H");
           if ((tonumber(currenthour) <= latest ) and ( tonumber(currenthour) >= earliest )) then
-            fibaro:call(sonosvirDevID, "pressButton", sonosactionid);
+          fibaro:call(sonosvirDevID, "pressButton", sonosactionid);
           end
         end
         if (enableblink > 0) then
           blinkstatus = checkstatus(blinkid);
           for loop = 1, numofblinks do
-    		if debug > 0 then fibaro:debug("Blinking " ..blinkid.. " " ..loop.. "."); end
+            if debug > 0 then fibaro:debug("Blinking " ..blinkid.. " " ..loop.. "."); end
             fibaro:call(blinkid, "turnOn");
             fibaro:sleep(500);
             fibaro:call(blinkid, "turnOff");
@@ -111,7 +112,7 @@ if (tonumber(fibaro:getValue(id, "value")) > 0) then
       status = checkstatus(id);
       mainloop(); 
     else
-	  didSendNotification = 0;
+      didSendNotification = 0;
       if debug > 0 then fibaro:debug("Turned off again..."); end
       return 1;
     end
