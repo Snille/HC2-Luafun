@@ -20,10 +20,20 @@ local debug = tonumber(fibaro:getGlobalValue("globaldebug")); -- Set the global 
 --local debug = 1 -- Set to one to activate debugging (show all messages). Enable this line to override the global debug variable.
 
 -- Don't change anything below this line!!
+
 local messsent = 1 -- Sets to 1/0 if a message is sent / reset.
 local count = 0 -- Sets to same as counter when done waiting for the message to be sent.
 local start = 0 -- Sets to 1 when the load cycle has started and first message has been sent.
-local sourceTrigger = fibaro:getSourceTrigger(); -- Check if autostart.
+
+-- Checking the start type.
+local trigger = fibaro:getSourceTrigger();
+if (trigger['type'] == 'property') then
+  if debug > 0 then fibaro:debug('Scene triggered by = ' .. trigger['deviceID']); end
+elseif (trigger['type'] == 'global') then
+  if debug > 0 then fibaro:debug('Scene triggered by source global variable = ' .. trigger['name']); end
+elseif (trigger['type'] == 'other') then
+  if debug > 0 then fibaro:debug('Scene triggered by other source'); end
+end
 
 -- Check power consumption if plug is on.
 function checkwatts()
@@ -99,7 +109,7 @@ status = checkstatus();
 watts = checkwatts();
 if debug > 0 then fibaro:debug ("Start - " ..thing.. " plug is in state "..status.. " and consumes " ..watts.. " watt."); end
 
-if (sourceTrigger["type"] == "autostart") then
+if (trigger["type"] == "autostart") then
   mainresult = mainloop();
 else
   if debug > 0 then fibaro:debug ("No auto start..."); end
